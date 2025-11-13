@@ -1,137 +1,89 @@
 <!DOCTYPE html>
-<html><head><title>667</title>
+<html>
+  <head>
+    <title>667</title>
+    <script src="https://threejs.org/build/three.min.js"></script>
+  </head>
+  <body>
+    <div id="dd"></div>
+    <div id="statsdiv"></div>
+    <script>
+      function f(id) {
+        return document.getElementById(id);
+      }
 
-<!--
-<script src="ThreeJS/build/three.js"></script>-->
-<!--
-<script src='file:///storage/extSdCard/OF/ThreeJS/build/three.js'></script>
+      var Width = window.innerWidth,
+        Height = window.innerHeight;
 
-<script src='../../extSdCard/OF/ThreeJS/build/three.js'></script>
--->
+      var PI = Math.PI, FPI = PI * 2;
 
-<script src="http://threejs.org/build/three.min.js"></script> <script src="http://threejs.org/examples/js/libs/tween.min.js"></script> <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-<!--
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
--->
-</head>
-<body>
+      var scene = new THREE.Scene();
 
-<div id="dd"></div>
+      var camera = new THREE.PerspectiveCamera(60, Width / Height, 0.1, 1000);
 
-<div id='statsdiv'></div>
+      var renderer = new THREE.WebGLRenderer();
 
-<script>
+      renderer.setClearColor("#ff0000");
+      renderer.setSize(Width, Height);
+      renderer.shadowMap.enabled = true;
 
-function f(id) {
-return document.getElementById(id);
-}
+      var axes = new THREE.AxesHelper(20);
+      scene.add(axes);
 
- var Width=window.innerWidth,Height=window.innerHeight;
- 
-var PI=Math.PI, FPI=PI*2;
- 
+      var planeGeometry = new THREE.PlaneGeometry(60, 50, 1, 1);
+      var planeMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
+      var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      plane.rotation.x = -0.5 * Math.PI;
+      plane.position.x = 0;
+      plane.position.y = 0;
+      plane.position.z = 0;
+      plane.receiveShadow = true;
+      scene.add(plane);
 
- var scene = new THREE.Scene();
+      var CubeGeometry = new THREE.BoxGeometry(4, 4, 4);
+      var CubeMaterial = new THREE.MeshLambertMaterial({ color: 0x2020ff });
+      var Cube = new THREE.Mesh(CubeGeometry, CubeMaterial);
+      Cube.position.x = 10;
+      Cube.position.y = 3;
+      Cube.position.z = 7;
+      Cube.castShadow = true;
+      scene.add(Cube);
 
- var camera=new THREE.PerspectiveCamera(60
- , Width/Height
- , 0.1, 1000);
- 
- 
- var renderer = new THREE.WebGLRenderer();
- 
- renderer.setClearColor("#ff0000");
- renderer.setSize(Width,Height);
- renderer.shadowMapEnabled=true;
- 
- var axes = new THREE.AxisHelper( 20 );
- scene.add(axes);
- 
- 
- var planeGeometry = new THREE.PlaneGeometry(60,50,1,1);
+      var sphereGeometry = new THREE.SphereGeometry(2, 20, 20);
+      var sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x9920ff });
+      var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.x = 0;
+      sphere.position.y = 4;
+      sphere.position.z = 0;
+      sphere.castShadow = true;
+      scene.add(sphere);
 
- var planeMaterial = new THREE.MeshLambertMaterial(
- {color: 0x888888});
- 
- var plane = new THREE.Mesh(planeGeometry,planeMaterial);
- plane.rotation.x=-0.5*Math.PI;
- plane.position.x = 0;
- plane.position.y = 0;
- plane.position.z = 0;
- 
- plane.receiveShadow=true;
- scene.add(plane);
+      var SpotLight = new THREE.SpotLight(0xffffff);
+      SpotLight.position.set(-30, 50, -10);
+      SpotLight.castShadow = true;
+      scene.add(SpotLight);
 
-var CubeGeometry=new THREE.CubeGeometry(4,4,4)
-var CubeMaterial= new THREE.MeshLambertMaterial({color: 0x2020ff});
+      camera.position.x = -50;
+      camera.position.y = 100;
+      camera.position.z = 40;
+      camera.lookAt(scene.position);
+      f("dd").append(renderer.domElement);
+      renderer.render(scene, camera);
 
-var Cube=new THREE.Mesh(CubeGeometry,CubeMaterial);
+      var step = 0;
 
-Cube.position.x=10;
-Cube.position.y=3;
-Cube.position.z=7;
+      function Draw() {
+        Cube.rotation.x += 0.1;
+        Cube.rotation.y += 0.1;
+        Cube.rotation.z += 0.1;
+        step += 10;
+        sphere.position.x = Math.cos((PI / 180) * step) * 5;
+        sphere.position.z = Math.sin((PI / 180) * step) * 5;
+        requestAnimationFrame(Draw);
+        renderer.render(scene, camera);
+      }
 
-Cube.castShadow=true;
-scene.add(Cube);
-
-
- var sphereGeometry = new THREE.SphereGeometry(2, 20, 20);
- var sphereMaterial = new THREE.MeshLambertMaterial(
- {color: 0x9920ff});
- 
- var sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
- sphere.position.x =0;
- sphere.position.y =4;
- sphere.position.z =0;
- 
-sphere.castShadow=true;
- scene.add(sphere);
- 
-
- var SpotLight=new THREE.SpotLight( 0xffffff );
- SpotLight.position.set(-30, 50, -10)
- 
- SpotLight.castShadow=true;
- scene.add(SpotLight);
- 
- camera.position.x = -50;
- camera.position.y = 100;
- camera.position.z = 40;
-
- camera.lookAt(scene.position);
- f('dd').append(renderer.domElement);
- renderer.render(scene, camera);
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- var step=0;
- 
- function Draw() {
- 
- Cube.rotation.x+=0.1;
- Cube.rotation.y+=0.1;
- Cube.rotation.z+=0.1;
- 
-step+=10; sphere.position.x=Math.cos((PI/180)*step)*5;
-sphere.position.z=Math.sin((PI/180)*step)*5;
- 
- requestAnimationFrame(Draw);
- renderer.render(scene, camera);
- }
- 
- 
-
-Draw()
-
-
-
-
-</script></body></html>
+      Draw();
+    </script>
+  </body>
+</html>
